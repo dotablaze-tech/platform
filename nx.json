@@ -3,7 +3,10 @@
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "production": ["default"],
-    "sharedGlobals": ["{workspaceRoot}/.github/workflows/ci.yml"]
+    "sharedGlobals": [
+      "{workspaceRoot}/.github/workflows/ci.yml",
+      "{workspaceRoot}/go.work"
+    ]
   },
   "nxCloudId": "67fc756a79bca31eee133412",
   "plugins": [
@@ -20,6 +23,7 @@
           "watchDepsName": "watch-deps"
         }
       }
-    }
+    },
+    "@nx-go/nx-go"
   ]
 }

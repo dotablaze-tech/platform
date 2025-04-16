@@ -1,90 +1,120 @@
-# DotablazeTech
+# Dotablaze Platform Monorepo
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+[![CI](https://github.com/dotablaze-tech/platform/actions/workflows/ci.yml/badge.svg)](https://github.com/dotablaze-tech/platform/actions/workflows/ci.yml)
+![Go](https://img.shields.io/badge/Go-1.24-blue)
+![Nx](https://img.shields.io/badge/Nx-monorepo-blue)
+![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.
+The Dotablaze Tech Platform Monorepo is a multi-language, multi-project repository that houses all application code,
+reusable libraries, configuration, and tooling used across the Dotablaze ecosystem. This repository is organized to
+support scalable development with a clean separation of concerns and structured sharing of features, utilities, and
+infrastructure.
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+## 📁 Structure Overview
 
-## Finish your CI setup
+- **apps/** – Full-stack applications grouped by language or runtime (e.g., Go bots and services).
+- **libs/** – Reusable code libraries organized by app, language, or shared domain:
+    - `feature/` – Domain-specific handlers, components, or state.
+    - `data-access/` – Integration with APIs or external services.
+    - `util/` – Common utility functions, models, and helpers.
+    - `ui/` – Visual or bot-rendered components (when applicable).
+- **tools/** – Dev tooling for formatting, local dev, automation, and updates.
 
-[Click here to finish setting up your workspace!](https://cloud.nx.app/connect/kcEQrm1SNj)
-
-
-## Generate a library
-
-```sh
-npx nx g @nx/js:lib packages/pkg1 --publishable --importPath=@my-org/pkg1
-```
-
-## Run tasks
-
-To build the library use:
-
-```sh
-npx nx build pkg1
-```
-
-To run any task with Nx use:
-
-```sh
-npx nx <target> <project-name>
-```
-
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
-
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Versioning and releasing
-
-To version and release the library use
+## 🗂️ Directory Structure
 
 ```
-npx nx release
+.
+├── apps/                    # Complete applications
+│   └── go/                  # Grouped by framework / language
+│       ├── meowbot/         # Specific application
+│       └── barkbot/
+│
+├── libs/                    # Reusable libraries
+│   ├── go/                  # Grouped by framework
+│   │   ├── meowbot/         # App-specific libraries
+│   │   │   ├── feature/
+│   │   │   └── util/
+│   │   ├── shared/          # Framework-wide shared
+│   │   │   ├── ui/
+│   │   │   ├── util/
+│   │   │   └── data-access/
+│   └── shared/              # Cross-framework shared
+│       └── utils/
+│
+└── tools/                   # Monorepo tooling
 ```
 
-Pass `--dry-run` to see what would happen without actually releasing the library.
+### 🔑 Key Architectural Principles
 
-[Learn more about Nx release &raquo;](hhttps://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+- **Language-Scoped**: Projects and libraries are grouped by runtime (e.g., `go/`, `angular/`, etc.).
+- **App Isolation**: Features unique to a specific app are namespaced under that app.
+- **Shared Logic**:
+    - App-specific: Scoped to one app only (`libs/go/meowbot/*`).
+    - Framework-wide: Usable across projects using the same runtime.
+    - Cross-platform: Reusable by any project (e.g., `libs/shared`).
+- **Library Types**:
+    - `feature/` – Domain-level logic or bot commands.
+    - `data-access/` – Service interfaces and clients.
+    - `util/` – Reusable helpers, emoji maps, etc.
+    - `ui/` – Discord message formatting or future rich UIs.
 
-## Keep TypeScript project references up to date
+## 🚀 Nx Task Execution
 
-Nx automatically updates TypeScript [project references](https://www.typescriptlang.org/docs/handbook/project-references.html) in `tsconfig.json` files to ensure they remain accurate based on your project dependencies (`import` or `require` statements). This sync is automatically done when running tasks such as `build` or `typecheck`, which require updated references to function correctly.
+Nx provides efficient task orchestration for builds, tests, and automation.
 
-To manually trigger the process to sync the project graph dependencies information to the TypeScript project references, run the following command:
-
-```sh
-npx nx sync
+```bash
+npx nx <target> <project> [options]
 ```
 
-You can enforce that the TypeScript project references are always in the correct state when running in CI by adding a step to your CI job configuration that runs the following command:
+**Examples:**
 
-```sh
-npx nx sync:check
+```bash
+npx nx build go-meowbot
+npx nx test go-meowbot-feature-handler
+npx nx run-many -t build -p meowbot
 ```
 
-[Learn more about nx sync](https://nx.dev/reference/nx-commands#sync)
+See the full guide: [https://nx.dev/features/run-tasks](https://nx.dev/features/run-tasks)
 
+## 🌐 Visualize Dependencies
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+Generate the project graph with:
 
-## Install Nx Console
+```bash
+npx nx graph
+```
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+This helps you visualize app/library dependencies and identify opportunities for optimization or sharing.
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## 📦 Deployment & Infrastructure
 
-## Useful links
+Deployment and Kubernetes infrastructure for Dotablaze services are managed in separate repositories:
 
-Learn more:
+- **Deployment Configs**: [https://github.com/dotablaze-tech/deployments](https://github.com/dotablaze-tech/deployments)
+- **Infra/Kubernetes (WIP)**: [https://github.com/jdwillmsen/jdw-kube](https://github.com/jdwillmsen/jdw-kube)
 
-- [Learn more about this workspace setup](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+Container images are hosted at:
 
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+- **Docker Hub**: [https://hub.docker.com/u/dotablaze](https://hub.docker.com/u/dotablaze)
+
+## 📚 Library Strategy
+
+This monorepo encourages reuse and clean separation of concerns by organizing libraries in layers:
+
+- `feature/` – Commands, event handlers, and scoped state.
+- `data-access/` – Service and bot integrations (coming soon).
+- `util/` – Emoji helpers, string formatters, etc.
+- `ui/` – For any visual rendering components.
+
+## 🧪 CI/CD & Automation
+
+CI pipelines live in `.github/workflows/`, and use Nx to build affected projects only, improving feedback time.
+
+## 📌 About
+
+This repo is the central platform for building, deploying, and scaling Dotablaze Tech applications — including bots,
+services, and eventually frontend dashboards. Managed with Nx and Go Workspaces for flexibility and performance.
+
+### 👤 Maintainer
+
+- **Jake Willmsen**
