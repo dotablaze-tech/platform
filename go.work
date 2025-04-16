@@ -1,0 +1,8 @@
+go 1.23
+
+use (
+	./apps/go/meowbot
+	./libs/go/meowbot/feature/handler
+	./libs/go/meowbot/feature/state
+	./libs/go/meowbot/util
+)
