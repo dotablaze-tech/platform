@@ -2,6 +2,8 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.1](https://github.com/dotablaze-tech/platform/compare/meowbot-0.1.0...meowbot-0.1.1) (2025-04-16)
+
 ## 0.1.0 (2025-04-16)
 
 
