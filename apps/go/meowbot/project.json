@@ -75,6 +75,9 @@
         "preset": "conventionalcommits",
         "postTargets": ["build-image", "update-app"]
       }
+    },
+    "update-app": {
+      "command": "bash tools/update-app.sh charts/meowbot/Chart.yaml {version} {projectName}"
     }
   }
 }
