@@ -17,7 +17,7 @@ func InitDB(ctx context.Context) error {
 	connStr := util.Cfg.DatabaseURL
 	if connStr == "" {
 		// Log a warning or use a fallback connection string for local dev environments
-		connStr = "postgres://default_user:default_password@localhost:5432/meowbot?sslmode=disable"
+		connStr = "postgres://default_user:default_password@127.0.0.1:5432/meowbot?sslmode=disable"
 	}
 
 	// Open the database connection
