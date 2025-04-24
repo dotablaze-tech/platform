@@ -21,9 +21,14 @@ func InitDB(ctx context.Context) error {
 	} else {
 		user := util.Cfg.DatabaseUser
 		pass := util.Cfg.DatabasePassword
-		url := util.Cfg.DatabaseURL
+		host := util.Cfg.DatabaseHost
+		port := util.Cfg.DatabasePort
+		name := util.Cfg.DatabaseName
 
-		connStr = fmt.Sprintf("postgres://%s:%s@%s", user, pass, url)
+		connStr = fmt.Sprintf(
+			"postgres://%s:%s@%s:%s/%s",
+			user, pass, host, port, name,
+		)
 	}
 
 	// Open the database connection
