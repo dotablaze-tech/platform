@@ -1,11 +1,10 @@
 # 🐾 Meow Bot
 
-![Docker](https://img.shields.io/docker/pulls/jdwillmsen/meow-bot?label=downloads)
-![Docker Image Version](https://img.shields.io/docker/v/jdwillmsen/jdw-servicediscovery)
-![Docker Image Size](https://img.shields.io/docker/image-size/jdwillmsen/jdw-servicediscovery)
-![Docker Downloads](https://img.shields.io/docker/pulls/jdwillmsen/jdw-servicediscovery?label=downloads)
+![Build](https://img.shields.io/github/actions/workflow/status/dotablaze-tech/platform/ci.yml?branch=main)
+![Docker Image Version](https://img.shields.io/docker/v/dotablaze/meowbot)
+![Docker Image Size](https://img.shields.io/docker/image-size/dotablaze/meowbot)
+![Docker Downloads](https://img.shields.io/docker/pulls/dotablaze/meowbot?label=downloads)
 ![Nx](https://img.shields.io/badge/Nx-managed-blue)
-![License](https://img.shields.io/github/license/jdwillmsen/jdw)
 
 **Meow Bot** is a lightweight and fun Discord bot built with Go and powered by `discordgo`. It tracks consecutive “meow”
 messages in a single channel, maintaining streaks, preventing duplicate users, and celebrating high scores. Ideal for
@@ -34,7 +33,7 @@ apps/go/meow-bot/
 
 ### Prerequisites
 
-- Go 1.23+
+- Go 1.24+
 - [Nx CLI](https://nx.dev)
 - Docker (optional for containerized runs)
 - Discord bot token

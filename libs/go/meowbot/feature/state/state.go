@@ -1,47 +1,62 @@
 package state
 
 import (
+	"context"
+	"libs/go/meowbot/feature/db"
 	"sync"
 )
 
 type GuildState struct {
-	MeowCount     int
-	LastUserID    string
-	HighScore     int
-	HighScoreUser string
+	MeowCount       int
+	LastUserID      string
+	HighScore       int
+	HighScoreUserID string
 }
 
 var (
+	getGuildStreak = func(ctx context.Context, guildID string) (*db.GuildStreak, error) {
+		return db.GetGuildStreak(ctx, db.DB, guildID)
+	}
+
 	mu    sync.Mutex
 	store = make(map[string]*GuildState)
 )
 
-// GetOrCreate returns the guild state, creating it if needed.
-func GetOrCreate(guildID string) *GuildState {
+func GetOrCreate(ctx context.Context, guildID string) *GuildState {
 	mu.Lock()
 	defer mu.Unlock()
 
-	gs, ok := store[guildID]
-	if !ok {
-		gs = &GuildState{}
-		store[guildID] = gs
+	if gs, ok := store[guildID]; ok {
+		return gs
 	}
+
+	dbStreak, err := getGuildStreak(ctx, guildID)
+	if err != nil {
+		dbStreak = &db.GuildStreak{} // fallback
+	}
+
+	gs := &GuildState{
+		MeowCount:       dbStreak.MeowCount,
+		LastUserID:      deref(dbStreak.LastUserID),
+		HighScore:       dbStreak.HighScore,
+		HighScoreUserID: deref(dbStreak.HighScoreUserID),
+	}
+	store[guildID] = gs
 	return gs
 }
 
-// Reset clears state for a guild.
 func Reset(guildID string) {
 	mu.Lock()
 	defer mu.Unlock()
-
 	if gs, ok := store[guildID]; ok {
 		gs.MeowCount = 0
 		gs.LastUserID = ""
 	}
 }
 
-func ResetAll(guildID string) {
-	mu.Lock()
-	defer mu.Unlock()
-	store[guildID] = &GuildState{}
+func deref(s *string) string {
+	if s == nil {
+		return ""
+	}
+	return *s
 }

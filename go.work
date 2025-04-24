@@ -1,9 +1,11 @@
-go 1.23.0
+go 1.24.0
 
-toolchain go1.23.1
+toolchain go1.24.2
 
 use (
 	./apps/go/meowbot
+	./libs/go/meowbot/feature/api
+	./libs/go/meowbot/feature/db
 	./libs/go/meowbot/feature/handler
 	./libs/go/meowbot/feature/state
 	./libs/go/meowbot/util
