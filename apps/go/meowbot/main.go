@@ -1,78 +1,91 @@
 package main
 
 import (
+	"context"
 	"github.com/bwmarrin/discordgo"
+	"libs/go/meowbot/feature/api"
+	"libs/go/meowbot/feature/db"
 	"libs/go/meowbot/feature/handler"
 	"libs/go/meowbot/util"
-	"log/slog"
 	"os"
 	"os/signal"
 	"syscall"
 )
 
-var (
-	logger         = slog.Default()
-	botToken       = os.Getenv("DISCORD_BOT_TOKEN")
-	allowedChannel = os.Getenv("ALLOWED_CHANNEL_ID")
-)
+func Run(ctx context.Context, cfg util.AppConfig) error {
+	util.Cfg.Logger.Info("🚀 Booting up Meow bot...",
+		"mode", util.Cfg.Mode,
+		"debug", util.Cfg.Debug,
+	)
 
-func main() {
-	logger.Info("Booting up Meow bot...")
-
-	util.InitEmojis(logger)
-
-	if allowedChannel != "" {
-		logger.Info("Channel restriction enabled", "channelID", allowedChannel)
+	// Initialize emojis and DB connection
+	util.InitEmojis()
+	if err := db.InitDB(ctx); err != nil {
+		return err
 	}
+	util.Cfg.Logger.Info("✅ Connected to meowbot PostgreSQL!")
 
-	if botToken == "" {
-		logger.Error("DISCORD_BOT_TOKEN not set")
-		os.Exit(1)
-	}
-
-	sess, err := discordgo.New("Bot " + botToken)
+	// Create Discord session
+	sess, err := discordgo.New("Bot " + cfg.BotToken)
 	if err != nil {
-		logger.Error("Failed to create Discord session", "error", err)
-		os.Exit(1)
+		return err
 	}
 
+	// Set up intents and handlers
 	sess.Identify.Intents = discordgo.IntentsGuildMessages | discordgo.IntentsMessageContent
-	sess.AddHandler(handler.MessageHandler(logger, allowedChannel))
-	sess.AddHandler(handler.CommandHandler(logger))
+	apiServer := api.New(db.DB, sess)
+	apiCtx, apiCancel := context.WithCancel(ctx)
+	defer apiCancel()
+	go apiServer.Start(apiCtx)
 
-	err = sess.Open()
-	if err != nil {
-		logger.Error("Failed to open Discord session", "error", err)
-		os.Exit(1)
+	// Add message handlers
+	sess.AddHandler(handler.MessageHandler(ctx))
+	sess.AddHandler(handler.CommandHandler(ctx))
+	sess.AddHandler(handler.ComponentHandler(ctx))
+
+	// Open Discord session
+	if err := sess.Open(); err != nil {
+		return err
 	}
-	defer func(sess *discordgo.Session) {
-		err := sess.Close()
-		if err != nil {
-			logger.Error("Failed to close Discord session", "error", err)
+	defer func() {
+		if err := sess.Close(); err != nil {
+			util.Cfg.Logger.Error("❌ Failed to close Discord session", "error", err)
+		} else {
+			util.Cfg.Logger.Info("✅ Successfully closed Discord session.")
 		}
-	}(sess)
+	}()
 
-	_, err = sess.ApplicationCommandCreate(sess.State.User.ID, "", &discordgo.ApplicationCommand{
-		Name:        "meowcount",
-		Description: "Check the current meow count",
-	})
-	if err != nil {
-		logger.Error("Failed to register /meowcount", "error", err)
+	// Register commands
+	if err := handler.RegisterCommands(sess); err != nil {
+		return err
 	}
 
-	_, err = sess.ApplicationCommandCreate(sess.State.User.ID, "", &discordgo.ApplicationCommand{
-		Name:        "highscore",
-		Description: "Check the highest meow streak",
-	})
-	if err != nil {
-		logger.Error("Failed to register /highscore", "error", err)
-	}
+	util.Cfg.Logger.Info("🐱 Meow bot is online!")
 
-	logger.Info("🐱 Meow bot is online!")
-
+	// Wait for termination signal
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-stop
 
-	logger.Info("👋 Shutting down Meow bot.")
+	// Graceful shutdown
+	if err := db.CloseDB(); err != nil {
+		return err
+	}
+
+	util.Cfg.Logger.Info("👋 Meow bot has shut down gracefully.")
+	return nil
+}
+
+func main() {
+	// Ensure bot token is available before proceeding
+	if util.Cfg.BotToken == "" {
+		util.Cfg.Logger.Error("❌ DISCORD_BOT_TOKEN not set. Exiting.")
+		os.Exit(1)
+	}
+
+	// Run the bot and handle errors
+	if err := Run(context.Background(), util.Cfg); err != nil {
+		util.Cfg.Logger.Error("❌ Error while running bot", "error", err)
+		os.Exit(1)
+	}
 }

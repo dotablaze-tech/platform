@@ -33,7 +33,7 @@ apps/go/meow-bot/
 
 ### Prerequisites
 
-- Go 1.23+
+- Go 1.24+
 - [Nx CLI](https://nx.dev)
 - Docker (optional for containerized runs)
 - Discord bot token
