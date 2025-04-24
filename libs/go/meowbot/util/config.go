@@ -10,15 +10,17 @@ import (
 var Cfg = LoadConfig()
 
 type AppConfig struct {
-	Mode        string
-	Debug       bool
-	IsProd      bool
-	BotToken    string
-	ApiPort     string
-	DatabaseURL string
-	EmojiList   string
-	Logger      *slog.Logger
-	Whitelist   struct {
+	Mode             string
+	Debug            bool
+	IsProd           bool
+	BotToken         string
+	ApiPort          string
+	DatabaseURL      string
+	DatabaseUser     string
+	DatabasePassword string
+	EmojiList        string
+	Logger           *slog.Logger
+	Whitelist        struct {
 		Guilds []string
 	}
 }
@@ -52,14 +54,16 @@ func LoadConfig() AppConfig {
 	}
 
 	return AppConfig{
-		Mode:        mode,
-		Debug:       debug,
-		IsProd:      mode == "production",
-		ApiPort:     apiPort,
-		BotToken:    os.Getenv("DISCORD_BOT_TOKEN"),
-		DatabaseURL: os.Getenv("DATABASE_URL"),
-		EmojiList:   os.Getenv("EMOJI_LIST"),
-		Logger:      logger,
+		Mode:             mode,
+		Debug:            debug,
+		IsProd:           mode == "production",
+		ApiPort:          apiPort,
+		BotToken:         os.Getenv("DISCORD_BOT_TOKEN"),
+		DatabaseURL:      os.Getenv("DATABASE_URL"),
+		DatabaseUser:     os.Getenv("DATABASE_USER"),
+		DatabasePassword: os.Getenv("DATABASE_PASSWORD"),
+		EmojiList:        os.Getenv("EMOJI_LIST"),
+		Logger:           logger,
 		Whitelist: struct {
 			Guilds []string
 		}{Guilds: guilds},
