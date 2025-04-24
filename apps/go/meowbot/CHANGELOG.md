@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.0.1](https://github.com/dotablaze-tech/platform/compare/meowbot-1.0.0...meowbot-1.0.1) (2025-04-24)
+
+### Dependency Updates
+
+* `go-meowbot-feature-db` updated to version `1.0.0`
+* `go-meowbot-util` updated to version `1.0.0`
 ## [1.0.0](https://github.com/dotablaze-tech/platform/compare/meowbot-0.1.1...meowbot-1.0.0) (2025-04-24)
 
 
