@@ -18,6 +18,9 @@ type AppConfig struct {
 	DatabaseURL      string
 	DatabaseUser     string
 	DatabasePassword string
+	DatabaseHost     string
+	DatabasePort     string
+	DatabaseName     string
 	EmojiList        string
 	Logger           *slog.Logger
 	Whitelist        struct {
@@ -62,6 +65,9 @@ func LoadConfig() AppConfig {
 		DatabaseURL:      os.Getenv("DATABASE_URL"),
 		DatabaseUser:     os.Getenv("DATABASE_USER"),
 		DatabasePassword: os.Getenv("DATABASE_PASSWORD"),
+		DatabaseHost:     os.Getenv("DATABASE_HOST"),
+		DatabasePort:     os.Getenv("DATABASE_PORT"),
+		DatabaseName:     os.Getenv("DATABASE_NAME"),
 		EmojiList:        os.Getenv("EMOJI_LIST"),
 		Logger:           logger,
 		Whitelist: struct {
