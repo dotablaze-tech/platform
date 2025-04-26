@@ -152,7 +152,7 @@ func logIgnoreBotMessage(m *discordgo.MessageCreate) {
 func MessageHandler(ctx context.Context) func(*discordgo.Session, *discordgo.MessageCreate) {
 	return func(s *discordgo.Session, m *discordgo.MessageCreate) {
 		// skip bot messages
-		if m.Author.ID == s.State.User.ID {
+		if m.Author.Bot {
 			logIgnoreBotMessage(m)
 			return
 		}
