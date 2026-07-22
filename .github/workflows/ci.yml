@@ -16,7 +16,8 @@ env:
 
 jobs:
   main:
-    runs-on: ubuntu-dotablaze-tech
+    # GitHub-hosted only: the self-hosted ARC runner set is dormant.
+    runs-on: ubuntu-latest
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
@@ -55,10 +56,15 @@ jobs:
           host: github.com
           private-key: ${{ secrets.ACTIONS_PRIVATE_KEY }}
       - if: ${{ github.event_name != 'pull_request' }}
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - if: ${{ github.event_name != 'pull_request' }}
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
-          driver: 'kubernetes'
+          # docker-container + QEMU replaces the kubernetes driver, which
+          # only works from a runner inside the cluster.
+          driver: 'docker-container'
           platforms: 'linux/amd64,linux/arm64'
       - if: ${{ github.event_name != 'pull_request' }}
         name: Run Version Upgrades
