@@ -66,7 +66,7 @@ http.ListenAndServe(":8080", r)
 
 ## 🧪 Testing
 
-*Test coverage coming soon.*
+_Test coverage coming soon._
 
 ---
 
