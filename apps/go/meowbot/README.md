@@ -43,20 +43,20 @@ With `DATABASE_URL` unset, the bot connects to
 
 ## Configuration
 
-| Variable             | Default      | Purpose                                                              |
-|----------------------|--------------|----------------------------------------------------------------------|
-| `DISCORD_BOT_TOKEN`  | none         | Required. The bot exits at startup without it.                       |
-| `DATABASE_URL`       | unset        | See the note below.                                                  |
-| `DATABASE_USER`      | none         | Postgres user, used when `DATABASE_URL` is set.                      |
-| `DATABASE_PASSWORD`  | none         | Postgres password, used when `DATABASE_URL` is set.                  |
-| `DATABASE_HOST`      | none         | Postgres host, used when `DATABASE_URL` is set.                      |
-| `DATABASE_PORT`      | none         | Postgres port, used when `DATABASE_URL` is set.                      |
-| `DATABASE_NAME`      | none         | Postgres database name, used when `DATABASE_URL` is set.             |
+| Variable             | Default      | Purpose                                                                        |
+| -------------------- | ------------ | ------------------------------------------------------------------------------ |
+| `DISCORD_BOT_TOKEN`  | none         | Required. The bot exits at startup without it.                                 |
+| `DATABASE_URL`       | unset        | See the note below.                                                            |
+| `DATABASE_USER`      | none         | Postgres user, used when `DATABASE_URL` is set.                                |
+| `DATABASE_PASSWORD`  | none         | Postgres password, used when `DATABASE_URL` is set.                            |
+| `DATABASE_HOST`      | none         | Postgres host, used when `DATABASE_URL` is set.                                |
+| `DATABASE_PORT`      | none         | Postgres port, used when `DATABASE_URL` is set.                                |
+| `DATABASE_NAME`      | none         | Postgres database name, used when `DATABASE_URL` is set.                       |
 | `MODE`               | `production` | `production` allows every guild; any other value enforces the guild whitelist. |
-| `WHITELISTED_GUILDS` | empty        | Comma-separated guild IDs allowed when `MODE` is not `production`.   |
-| `DEBUG`              | `false`      | `true` enables debug logging.                                        |
-| `API_PORT`           | `8080`       | Port for the HTTP API.                                               |
-| `EMOJI_LIST`         | none         | Emoji list read by the emoji helper.                                 |
+| `WHITELISTED_GUILDS` | empty        | Comma-separated guild IDs allowed when `MODE` is not `production`.             |
+| `DEBUG`              | `false`      | `true` enables debug logging.                                                  |
+| `API_PORT`           | `8080`       | Port for the HTTP API.                                                         |
+| `EMOJI_LIST`         | none         | Emoji list read by the emoji helper.                                           |
 
 `DATABASE_URL` is only tested for emptiness: when non-empty, the connection string is built as
 `postgres://USER:PASSWORD@HOST:PORT/NAME` from the five `DATABASE_*` variables and the URL's own value is ignored
@@ -64,13 +64,13 @@ With `DATABASE_URL` unset, the bot connects to
 
 ## Commands
 
-| Command        | Description                                                                          |
-|----------------|--------------------------------------------------------------------------------------|
-| `/count`       | Current meow count for this server                                                   |
-| `/highscore`   | Highest meow streak for this server                                                  |
-| `/stats`       | Your personal meow stats; optional `scope` (`guild` or `global`)                     |
-| `/setup`       | Choose the channel Meowbot listens in (`channel` option)                             |
-| `/leaderboard` | Top meowers; optional `scope`, `metric` (`total` or `success`) and `page`            |
+| Command        | Description                                                               |
+| -------------- | ------------------------------------------------------------------------- |
+| `/count`       | Current meow count for this server                                        |
+| `/highscore`   | Highest meow streak for this server                                       |
+| `/stats`       | Your personal meow stats; optional `scope` (`guild` or `global`)          |
+| `/setup`       | Choose the channel Meowbot listens in (`channel` option)                  |
+| `/leaderboard` | Top meowers; optional `scope`, `metric` (`total` or `success`) and `page` |
 
 A message matching `(?i)^m+e+o+w+$` (for example `meooow`) counts as a meow. The same user cannot meow twice in a row.
 

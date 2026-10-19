@@ -10,20 +10,20 @@
 
 This service is containerized and managed via [Nx](https://nx.dev), supporting multi-arch Docker builds and local development with optional volume caching.
 
----  
+---
 
 ## 📁 Project Structure
 
-```text  
-database/meowbotdb/  
-├── Dockerfile           # Defines the Postgres image and entrypoint  
-├── project.json         # Nx configuration and targets  
-└── src/  
-    ├── 00_schema.sql    # SQL schema definitions for bot state and logs  
-    └── 01_data.sql      # Initial data (e.g., test configs, emoji presets)  
+```text
+database/meowbotdb/
+├── Dockerfile           # Defines the Postgres image and entrypoint
+├── project.json         # Nx configuration and targets
+└── src/
+    ├── 00_schema.sql    # SQL schema definitions for bot state and logs
+    └── 01_data.sql      # Initial data (e.g., test configs, emoji presets)
 ```
 
----  
+---
 
 ## 🚀 Getting Started
 
@@ -34,29 +34,29 @@ database/meowbotdb/
 
 ### Run Locally (Ephemeral)
 
-```bash  
-nx run meowbotdb:serve  
+```bash
+nx run meowbotdb:serve
 ```
 
 Runs PostgreSQL in a disposable Docker container on port `5432`.
 
 ### Run with Persistent Volume
 
-```bash  
-nx run meowbotdb:serve-cache  
+```bash
+nx run meowbotdb:serve-cache
 ```
 
 Creates and mounts a Docker volume (`meowbotdb-data`) for persistent local storage.
 
 ### Clear Persistent Volume
 
-```bash  
-nx run meowbotdb:clear-cache  
+```bash
+nx run meowbotdb:clear-cache
 ```
 
 Removes the `meowbotdb-data` volume to reset local database state.
 
----  
+---
 
 ## 🔨 Build
 
@@ -64,35 +64,35 @@ Build Docker images with semantic versioning and multi-platform support.
 
 ### CI/CD Multi-Arch Build
 
-```bash  
-nx run meowbotdb:build-image  
+```bash
+nx run meowbotdb:build-image
 ```
 
 Builds and pushes images for `linux/amd64` and `linux/arm64`, tagged as `latest` and with semantic version.
 
 ### Local Build Only
 
-```bash  
-nx run meowbotdb:local-build-image  
+```bash
+nx run meowbotdb:local-build-image
 ```
 
 Builds a local image using host architecture for development/testing.
 
----  
+---
 
 ## 🗃️ Database Credentials
 
 Default credentials after container start:
 
-```text  
-Host:     localhost  
-Port:     5432  
-Database: meowbot  
-User:     default_user  
+```text
+Host:     localhost
+Port:     5432
+Database: meowbot
+User:     default_user
 Password: default_password
 ```
 
----  
+---
 
 ## 📄 SQL Files
 
@@ -101,25 +101,25 @@ Password: default_password
 
 These scripts are executed automatically at container start.
 
----  
+---
 
 ## 🧪 Versioning
 
 Handled via [Conventional Commits](https://www.conventionalcommits.org/) + [`@jscutlery/semver`](https://github.com/jscutlery/semver):
 
-```bash  
-nx run meowbotdb:version  
+```bash
+nx run meowbotdb:version
 ```
 
 Automates version bumping, changelog, tagging, and build/push.
 
----  
+---
 
 ## 📦 Deployment
 
 Used internally by Meowbot services across environments, including CI pipelines and local dev.
 
----  
+---
 
 ## 📌 Notes
 
