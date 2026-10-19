@@ -1,4 +1,4 @@
-# 🐾 Meow Bot
+# Meowbot
 
 ![Build](https://img.shields.io/github/actions/workflow/status/dotablaze-tech/platform/ci.yml?branch=main)
 ![Docker Image Version](https://img.shields.io/docker/v/dotablaze/meowbot)
@@ -6,132 +6,103 @@
 ![Docker Downloads](https://img.shields.io/docker/pulls/dotablaze/meowbot?label=downloads)
 ![Nx](https://img.shields.io/badge/Nx-managed-blue)
 
-**Meow Bot** is a lightweight and fun Discord bot built with Go and powered by `discordgo`. It tracks consecutive “meow”
-messages in a single channel, maintaining streaks, preventing duplicate users, and celebrating high scores. Ideal for
-community engagement, cat lovers, and general chaos.
+Meowbot is a Discord bot built with Go and `discordgo`. It tracks consecutive "meow" messages in a channel per guild,
+keeps streaks and high scores in PostgreSQL, and exposes slash commands and a small HTTP stats API.
 
-This project is managed with [Nx](https://nx.dev) and includes Docker support for local and CI/CD workflows.
-
----
-
-## 📁 Project Structure
+## Project Structure
 
 ```
-apps/go/meow-bot/
-├── Dockerfile              # Production image
-├── Dockerfile.local        # Local development Dockerfile
-├── README.md               # This file
-├── go.mod / go.sum         # Module definitions
-├── main.go                 # Main bot entrypoint
-├── main_test.go            # Unit tests
-└── assets/                 # Bot avatars/icons
+apps/go/meowbot/
+├── Dockerfile          # Production image (copies a prebuilt binary from dist/)
+├── Dockerfile.local    # Local image that builds the binary inside Docker
+├── go.mod / go.sum     # Module definition
+├── main.go             # Entrypoint
+├── main_test.go        # Unit tests
+├── project.json        # Nx targets
+└── assets/             # Bot icons
 ```
 
----
+Handlers, database access, the HTTP API and config live in `libs/go/meowbot/` (`feature/handler`, `feature/db`,
+`feature/api`, `feature/state`, `util`). The schema is in [`apps/database/meowbotdb`](../../database/meowbotdb).
 
-## 🚀 Getting Started
+## Getting Started
 
-### Prerequisites
-
-- Go 1.24+
-- [Nx CLI](https://nx.dev)
-- Docker (optional for containerized runs)
-- Discord bot token
-
-### Local Run (Token via ENV)
+Prerequisites: Go (version in `go.mod`), Node.js with `npm ci` run at the repo root, a Discord bot token, a reachable
+PostgreSQL database (Docker optional).
 
 ```bash
-DISCORD_TOKEN=your-token-here nx run meow-bot:serve
+# Start a local database on :5432 (see apps/database/meowbotdb)
+npx nx run meowbotdb:serve
+
+# Run the bot
+DISCORD_BOT_TOKEN=your-token npx nx run meowbot:serve
 ```
 
-### Local Dev with Volume (Docker)
+With `DATABASE_URL` unset, the bot connects to
+`postgres://default_user:default_password@127.0.0.1:5432/meowbot?sslmode=disable`.
+
+## Configuration
+
+| Variable             | Default      | Purpose                                                              |
+|----------------------|--------------|----------------------------------------------------------------------|
+| `DISCORD_BOT_TOKEN`  | none         | Required. The bot exits at startup without it.                       |
+| `DATABASE_URL`       | unset        | See the note below.                                                  |
+| `DATABASE_USER`      | none         | Postgres user, used when `DATABASE_URL` is set.                      |
+| `DATABASE_PASSWORD`  | none         | Postgres password, used when `DATABASE_URL` is set.                  |
+| `DATABASE_HOST`      | none         | Postgres host, used when `DATABASE_URL` is set.                      |
+| `DATABASE_PORT`      | none         | Postgres port, used when `DATABASE_URL` is set.                      |
+| `DATABASE_NAME`      | none         | Postgres database name, used when `DATABASE_URL` is set.             |
+| `MODE`               | `production` | `production` allows every guild; any other value enforces the guild whitelist. |
+| `WHITELISTED_GUILDS` | empty        | Comma-separated guild IDs allowed when `MODE` is not `production`.   |
+| `DEBUG`              | `false`      | `true` enables debug logging.                                        |
+| `API_PORT`           | `8080`       | Port for the HTTP API.                                               |
+| `EMOJI_LIST`         | none         | Emoji list read by the emoji helper.                                 |
+
+`DATABASE_URL` is only tested for emptiness: when non-empty, the connection string is built as
+`postgres://USER:PASSWORD@HOST:PORT/NAME` from the five `DATABASE_*` variables and the URL's own value is ignored
+(`sslmode` is not set). The Helm chart sets it to a placeholder JDBC URL for this reason.
+
+## Commands
+
+| Command        | Description                                                                          |
+|----------------|--------------------------------------------------------------------------------------|
+| `/count`       | Current meow count for this server                                                   |
+| `/highscore`   | Highest meow streak for this server                                                  |
+| `/stats`       | Your personal meow stats; optional `scope` (`guild` or `global`)                     |
+| `/setup`       | Choose the channel Meowbot listens in (`channel` option)                             |
+| `/leaderboard` | Top meowers; optional `scope`, `metric` (`total` or `success`) and `page`            |
+
+A message matching `(?i)^m+e+o+w+$` (for example `meooow`) counts as a meow. The same user cannot meow twice in a row.
+
+## HTTP API
+
+Served on `API_PORT`: `/liveness`, `/readiness`, `/stats`, `/leaderboard`, `/users`, `/users/...`, `/guilds` and
+`/guilds/...`. The chart's probes use `/liveness` and `/readiness`.
+
+## Nx Targets
 
 ```bash
-nx run meow-bot:serve-cache
+npx nx build meowbot
+npx nx test meowbot
+npx nx lint meowbot
+npx nx run meowbot:local-build-image   # builds dotablaze/meowbot:latest locally
+npx nx run meowbot:serve-container     # runs the image; forwards DISCORD_BOT_TOKEN from the environment
 ```
 
-Creates a volume (`meow-bot-data`) for persistent local development (e.g., future DB use).
+## Release and Deploy
 
----
+Releases are automated; do not run `version` or `build-image` by hand (`build-image` pushes to Docker Hub).
 
-## ✨ Features
+1. A `fix:` or `feat:` commit merged to `main` makes the CI `release` job run `nx affected -t version`.
+2. `@jscutlery/semver` bumps the version, tags `meowbot-X.Y.Z` and pushes `dotablaze/meowbot:X.Y.Z` and `:latest`
+   (linux/amd64 and linux/arm64) to Docker Hub.
+3. The `update-app` target sets `appVersion` in `charts/meowbot/Chart.yaml` in
+   [dotablaze-tech/deployments](https://github.com/dotablaze-tech/deployments), and ArgoCD rolls the new version to
+   `non`.
+4. `prd` pins `image.tag` in `charts/meowbot/values-prd.yaml` and is promoted by a PR in the deployments repo.
 
-- Regex-based “meow” detection (e.g., `meooow`, `MEEEEOW`)
-- Streak counter per guild
-- Prevents same user from meowing twice in a row
-- Tracks and announces high scores
-- Slash command `/highscore` to show current record
-- Guild-specific in-memory state tracking
-- `slog`-based structured logging
+Other commit types (`docs`, `chore`, `ci`, ...) do not release. See the [root README](../../../README.md#release-flow).
 
----
+## License
 
-## 🐳 Docker
-
-### Build Production Image
-
-```bash
-npx nx run meow-bot:build-image
-```
-
-### Build Local Dev Image
-
-```bash
-npx nx run meow-bot:local-build-image
-```
-
----
-
-## 📦 Deployment
-
-This bot is designed to run as a stateless container with ephemeral memory or backed by a persistent volume. Future
-plans may include Redis or embedded DB support.
-
----
-
-## 🔧 Commands
-
-- `/highscore` – Shows the current top meow streak and who set it.
-
----
-
-## 🐱 Example Interaction
-
-```text
-User1: meow
-Bot: 😺 meow x1!
-User2: meeeow
-Bot: 😼 meow x2!
-User1: meow
-Bot: 😻 meow x3!
-User1: meow
-Bot: 😾 You can't meow twice in a row!
-```
-
----
-
-## 🧪 Testing
-
-```bash
-go test ./apps/go/meow-bot
-```
-
----
-
-## 📌 Notes
-
-- You must set the bot token via `DISCORD_TOKEN` env var or update `main.go` to read from config.
-- The bot is intended for one channel per guild.
-- You can customize behavior (e.g., emojis, reset behavior) in the handler and state packages.
-
----
-
-## 📷 Assets
-
-A few example icons are included in `apps/go/meow-bot/assets/` for use when registering your bot on Discord.
-
----
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+MIT, as declared in the root `package.json`. The repository has no `LICENSE` file.
