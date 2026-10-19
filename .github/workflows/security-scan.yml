@@ -1,0 +1,31 @@
+name: Security Scan
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    # The main-branch run exists to land SARIF on the default branch, which
+    # docs-only commits cannot change.
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
+
+# Cancel superseded PR runs; a main-push always uploads its SARIF.
+concurrency:
+  group: security-scan-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions: {}
+
+jobs:
+  scan:
+    permissions:
+      contents: read
+      security-events: write
+    # Advisory first: findings upload as SARIF but do not fail the job.
+    uses: jdwlabs/.github/.github/workflows/security-scan.yml@f20bc8b9f19c4260846052d7aed50a588907e91d # main as of 2026-10-19 (no tagged releases)
+    with:
+      fail-on-findings: false
+      # Must match the pin above, otherwise the pinned workflow logic runs
+      # against main's gitleaks config.
+      config-ref: f20bc8b9f19c4260846052d7aed50a588907e91d
