@@ -8,24 +8,36 @@
     "build": {
       "executor": "@nx-go/nx-go:build",
       "options": {
-        "main": "{projectRoot}/main.go",
+        "main": "main.go",
         "outputPath": "dist/apps/go/meowbot/main"
-      }
+      },
+      "cache": true,
+      "inputs": ["golang"],
+      "outputs": ["{workspaceRoot}/dist/{projectRoot}*"]
     },
     "serve": {
       "executor": "@nx-go/nx-go:serve",
       "options": {
-        "main": "{projectRoot}/main.go"
-      }
+        "main": "main.go"
+      },
+      "inputs": ["golang"],
+      "continuous": true
     },
     "test": {
-      "executor": "@nx-go/nx-go:test"
+      "executor": "@nx-go/nx-go:test",
+      "cache": true,
+      "inputs": ["golang"]
     },
     "lint": {
-      "executor": "@nx-go/nx-go:lint"
+      "executor": "@nx-go/nx-go:lint",
+      "cache": true,
+      "inputs": ["golang"]
     },
     "tidy": {
-      "executor": "@nx-go/nx-go:tidy"
+      "executor": "@nx-go/nx-go:tidy",
+      "cache": true,
+      "inputs": ["golang"],
+      "outputs": ["{projectRoot}/go.mod", "{projectRoot}/go.sum"]
     },
     "build-image": {
       "executor": "nx:run-commands",
