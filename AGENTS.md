@@ -29,7 +29,10 @@ Push to `main` runs `.github/workflows/ci.yml`: `check` (format, lint, test,
 build) then, on `main` only, `release`:
 
 1. `@jscutlery/semver` versions affected projects. Only `fix` and `feat`
-   commits bump; `chore`, `docs`, `ci` etc. release nothing.
+   commits bump; `chore`, `docs`, `ci` etc. release nothing
+   (`skipCommitTypes` in `nx.json`). The `go-meowbot-*` libs are versioned
+   too, so their tags mark what meowbot already shipped; a lib fix bumps the
+   lib and patches meowbot.
 2. It pushes the `meowbot-X.Y.Z` tag, then runs `build-image` (pushes
    `dotablaze/meowbot:X.Y.Z` and `latest`).
 3. `update-app` runs `tools/update-app.sh`, which pushes the new `appVersion`
