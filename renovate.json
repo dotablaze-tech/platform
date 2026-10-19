@@ -26,6 +26,12 @@
       ],
       "matchUpdateTypes": ["major"],
       "automerge": false
+    },
+    {
+      "description": "@jscutlery/semver's preset loader resolves the root copy of this preset, and v10 changed the shape it reads, which silently disables release bumps. Keep it on 7.x until semver supports the new shape.",
+      "matchPackageNames": ["conventional-changelog-conventionalcommits"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
     }
   ]
 }
