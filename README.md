@@ -99,6 +99,18 @@ only job that receives the Docker Hub and deploy-key secrets.
 Renovate auto-merges minor and patch updates once CI passes. Go module and Dockerfile updates are committed as
 `fix(deps)` so they release; a merge therefore deploys a new image to `non`, never to `prd`.
 
+### Branch Protection
+
+Rulesets live as code in [`.github/rulesets/`](.github/rulesets/). Edit the JSON, merge by PR, then apply from that
+directory with an admin `gh` login: `./apply.sh --dry-run` to diff against live, `./apply.sh` to apply (it refuses a
+change that weakens protection unless given `--allow-weakening`).
+
+- **Baseline** (`main`): PR required, rebase merge only, linear history, no force-push or deletion, and `check`, the
+  scans, PR signatures and CodeQL must pass. Org admins and GitHub Actions bypass it; the `release` job pushes its
+  release commit to `main` with `GITHUB_TOKEN`.
+- **Branch Naming Convention**: branches start with `feat/`, `fix/`, `chore/`, `docs/` and similar, or `renovate/`.
+- **Release Tag Protection**: release tags cannot be deleted or moved, so a bad release is fixed forward.
+
 ## 📌 About
 
 This repo is the central platform for building, deploying, and scaling Dotablaze Tech applications — including bots,
