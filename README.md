@@ -107,8 +107,8 @@ directory with an admin `gh` login: `./apply.sh --dry-run` to diff against live,
 change that weakens protection unless given `--allow-weakening`).
 
 - **Baseline** (`main`): PR required, rebase merge only, linear history, no force-push or deletion, and `check`, the
-  scans, PR signatures and CodeQL must pass. Org admins and GitHub Actions bypass it; the `release` job pushes its
-  release commit to `main` with `GITHUB_TOKEN`.
+  scans, PR signatures and CodeQL must pass. Org admins bypass it; the `release` job pushes its release commit to
+  `main` over SSH as the org's machine user, an admin, for that reason.
 - **Branch Naming Convention**: branches start with `feat/`, `fix/`, `chore/`, `docs/` and similar, or `renovate/`.
 - **Release Tag Protection**: release tags cannot be deleted or moved, so a bad release is fixed forward.
 
