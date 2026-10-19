@@ -1,7 +1,7 @@
 # Dotablaze Platform Monorepo
 
 [![CI](https://github.com/dotablaze-tech/platform/actions/workflows/ci.yml/badge.svg)](https://github.com/dotablaze-tech/platform/actions/workflows/ci.yml)
-![Go](https://img.shields.io/badge/Go-1.24-blue)
+![Go](https://img.shields.io/badge/Go-1.26-blue)
 ![Nx](https://img.shields.io/badge/Nx-monorepo-blue)
 ![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
@@ -12,51 +12,28 @@ infrastructure.
 
 ## 📁 Structure Overview
 
-- **apps/** – Full-stack applications grouped by language or runtime (e.g., Go bots and services).
-- **libs/** – Reusable code libraries organized by app, language, or shared domain:
-    - `feature/` – Domain-specific handlers, components, or state.
-    - `data-access/` – Integration with APIs or external services.
-    - `util/` – Common utility functions, models, and helpers.
-    - `ui/` – Visual or bot-rendered components (when applicable).
-- **tools/** – Dev tooling for formatting, local dev, automation, and updates.
-
-## 🗂️ Directory Structure
+- **apps/** – Deployable applications, grouped by language or runtime.
+- **libs/** – Go libraries used by `meowbot`, under `libs/go/meowbot/` (`feature/api`, `feature/db`,
+  `feature/handler`, `feature/state`, `util`).
+- **tools/** – Automation scripts, such as `update-app.sh` (see [tools/README.md](tools/README.md)).
+- **packages/** – npm workspace packages (currently empty).
 
 ```
 .
-├── apps/                    # Complete applications
-│   └── go/                  # Grouped by framework / language
-│       ├── meowbot/         # Specific application
-│       └── barkbot/
-│
-├── libs/                    # Reusable libraries
-│   ├── go/                  # Grouped by framework
-│   │   ├── meowbot/         # App-specific libraries
-│   │   │   ├── feature/
-│   │   │   └── util/
-│   │   ├── shared/          # Framework-wide shared
-│   │   │   ├── ui/
-│   │   │   ├── util/
-│   │   │   └── data-access/
-│   └── shared/              # Cross-framework shared
-│       └── utils/
-│
-└── tools/                   # Monorepo tooling
+├── apps/
+│   ├── database/
+│   │   └── meowbotdb/       # Postgres image with the meowbot schema
+│   └── go/
+│       └── meowbot/         # Discord bot
+├── libs/
+│   └── go/
+│       └── meowbot/
+│           ├── feature/     # api, db, handler, state
+│           └── util/
+└── tools/                   # update-app.sh
 ```
 
-### 🔑 Key Architectural Principles
-
-- **Language-Scoped**: Projects and libraries are grouped by runtime (e.g., `go/`, `angular/`, etc.).
-- **App Isolation**: Features unique to a specific app are namespaced under that app.
-- **Shared Logic**:
-    - App-specific: Scoped to one app only (`libs/go/meowbot/*`).
-    - Framework-wide: Usable across projects using the same runtime.
-    - Cross-platform: Reusable by any project (e.g., `libs/shared`).
-- **Library Types**:
-    - `feature/` – Domain-level logic or bot commands.
-    - `data-access/` – Service interfaces and clients.
-    - `util/` – Reusable helpers, emoji maps, etc.
-    - `ui/` – Discord message formatting or future rich UIs.
+Go modules are tied together by `go.work`; each project has its own `go.mod` and Nx `project.json`.
 
 ## 🚀 Nx Task Execution
 
@@ -69,9 +46,9 @@ npx nx <target> <project> [options]
 **Examples:**
 
 ```bash
-npx nx build go-meowbot
+npx nx build meowbot
 npx nx test go-meowbot-feature-handler
-npx nx run-many -t build -p meowbot
+npx nx run-many -t build -p meowbot meowbotdb
 ```
 
 See the full guide: [https://nx.dev/features/run-tasks](https://nx.dev/features/run-tasks)
@@ -97,23 +74,30 @@ Container images are hosted at:
 
 - **Docker Hub**: [https://hub.docker.com/u/dotablaze](https://hub.docker.com/u/dotablaze)
 
-## 📚 Library Strategy
-
-This monorepo encourages reuse and clean separation of concerns by organizing libraries in layers:
-
-- `feature/` – Commands, event handlers, and scoped state.
-- `data-access/` – Service and bot integrations (coming soon).
-- `util/` – Emoji helpers, string formatters, etc.
-- `ui/` – For any visual rendering components.
-
 ## 🧪 CI/CD & Automation
 
 CI pipelines live in `.github/workflows/`, and use Nx to build affected projects only, improving feedback time.
 
-`ci.yml` has two jobs. `check` runs format, lint, test, e2e and build on every PR and push with read-only
-permissions. `release` runs only on pushes to `main` after `check` passes: it versions affected projects, pushes
-their images to Docker Hub and bumps the app version in `dotablaze-tech/deployments`. Only `release` receives
-the Docker Hub and deploy-key secrets.
+`ci.yml` has two jobs. `check` runs format check, lint, test, component-test, e2e and build (affected projects only) on
+every PR and push, with read-only permissions. `release` runs only on pushes to `main` after `check` passes and is the
+only job that receives the Docker Hub and deploy-key secrets.
+
+### Release Flow
+
+1. A push to `main` runs the CI `release` job, which builds affected projects and runs `nx affected -t version`.
+2. `@jscutlery/semver` (conventional commits) bumps only for `fix` and `feat`; `docs`, `chore`, `ci` and similar
+   commits do not release.
+3. A bump creates a release commit and a tag such as `meowbot-X.Y.Z`.
+4. The `postTargets` run: `build-image` pushes `dotablaze/meowbot:X.Y.Z` and `:latest` to Docker Hub for linux/amd64 and
+   linux/arm64.
+5. `update-app` runs [`tools/update-app.sh`](tools/README.md), which pushes the new `appVersion` to
+   `charts/meowbot/Chart.yaml` on `main` of the deployments repo. ArgoCD auto-rolls `non`.
+6. `prd` pins `image.tag` in the deployments repo's `charts/meowbot/values-prd.yaml` and is promoted by a PR there.
+
+`meowbotdb` versions the same way (image only, no `update-app`).
+
+Renovate auto-merges minor and patch updates once CI passes. Go module and Dockerfile updates are committed as
+`fix(deps)` so they release; a merge therefore deploys a new image to `non`, never to `prd`.
 
 ## 📌 About
 
