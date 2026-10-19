@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.0.7](https://github.com/dotablaze-tech/platform/compare/meowbot-1.0.6...meowbot-1.0.7) (2026-10-19)
+
+### Bug Fixes
+
+* **meowbot:** declare the non-root user in the image ([93c75d5](https://github.com/dotablaze-tech/platform/commit/93c75d5351855907291e2a22349ff893fdd13753))
+
 ## [1.0.6](https://github.com/dotablaze-tech/platform/compare/meowbot-1.0.5...meowbot-1.0.6) (2026-10-19)
 
 ### Dependency Updates
