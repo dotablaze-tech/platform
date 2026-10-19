@@ -1,0 +1,31 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": [
+    "Renovate owns dependency updates for this repo; Dependabot only reports alerts.",
+    "Non-major updates auto-merge once CI passes. A merge here only builds a new meowbot image that rolls to non; prd stays pinned in dotablaze-tech/deployments."
+  ],
+  "extends": ["github>jdwlabs/.github", "github>jdwlabs/.github:automerge"],
+  "postUpdateOptions": ["gomodTidy"],
+  "packageRules": [
+    {
+      "description": "Go modules and the meowbot base image ship in the bot, so they commit as fix(deps): @jscutlery/semver only cuts a release for fix and feat, and a chore(deps) security patch would merge without ever deploying. They get their own group because one group produces one commit, which carries one type.",
+      "matchManagers": ["gomod", "dockerfile"],
+      "semanticCommitType": "fix",
+      "groupName": "meowbot runtime dependencies",
+      "groupSlug": "meowbot-runtime"
+    },
+    {
+      "description": "Nx majors need nx migrate and their generated migrations, so they never auto-merge, even though they are devDependencies.",
+      "matchPackageNames": [
+        "nx",
+        "@nx/**",
+        "@nx-go/**",
+        "@jscutlery/**",
+        "@swc/**",
+        "@swc-node/**"
+      ],
+      "matchUpdateTypes": ["major"],
+      "automerge": false
+    }
+  ]
+}
