@@ -86,7 +86,8 @@ only job that receives the Docker Hub and deploy-key secrets.
 
 1. A push to `main` runs the CI `release` job, which builds affected projects and runs `nx affected -t version`.
 2. `@jscutlery/semver` (conventional commits) bumps only for `fix` and `feat`; `docs`, `chore`, `ci` and similar
-   commits do not release.
+   commits do not release (`skipCommitTypes` in `nx.json`). The `go-meowbot-*` libs are versioned too, so a lib fix
+   tags the lib and patches `meowbot`.
 3. A bump creates a release commit and a tag such as `meowbot-X.Y.Z`.
 4. The `postTargets` run: `build-image` pushes `dotablaze/meowbot:X.Y.Z` and `:latest` to Docker Hub for linux/amd64 and
    linux/arm64.
