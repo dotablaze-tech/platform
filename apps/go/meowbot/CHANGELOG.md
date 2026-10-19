@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.0.5](https://github.com/dotablaze-tech/platform/compare/meowbot-1.0.4...meowbot-1.0.5) (2026-10-19)
+
+
+### Bug Fixes
+
+* **meowbot:** pin distroless base image by digest ([0b49712](https://github.com/dotablaze-tech/platform/commit/0b49712ca1f3f1ed48edbd12c8d8816696b0a8eb))
+
 ## [1.0.4](https://github.com/dotablaze-tech/platform/compare/meowbot-1.0.3...meowbot-1.0.4) (2026-10-19)
 
 ### Dependency Updates
