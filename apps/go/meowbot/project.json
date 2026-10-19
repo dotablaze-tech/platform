@@ -9,7 +9,7 @@
       "executor": "@nx-go/nx-go:build",
       "options": {
         "main": "main.go",
-        "outputPath": "dist/apps/go/meowbot/main"
+        "outputPath": "../../../dist/apps/go/meowbot/main"
       },
       "cache": true,
       "inputs": ["golang"],
