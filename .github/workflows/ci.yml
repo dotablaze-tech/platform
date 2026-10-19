@@ -7,25 +7,31 @@ on:
   pull_request:
   workflow_dispatch:
 
-permissions:
-  actions: write
-  contents: write
+permissions: {}
+
+concurrency:
+  group: ci-${{ github.ref }}
+  # A cancelled main run could stop between the version tag push and the
+  # image push, leaving a release with no image.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
 
 jobs:
-  main:
+  check:
     # GitHub-hosted only: the self-hosted ARC runner set is dormant.
     runs-on: ubuntu-latest
-    env:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+    permissions:
+      contents: read
+      # nx-set-shas looks up the last successful run of this workflow.
+      actions: read
     steps:
       - name: Checkout Codebase
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: Install Dependencies
         run: npm ci
       - name: Setup Base and SHAs for 'nx affected'
@@ -43,36 +49,49 @@ jobs:
         run: npx nx affected -t e2e --parallel=1
       - name: Run Build
         run: npx nx affected -t build
-      - if: ${{ github.event_name != 'pull_request' }}
-        name: Login to Docker Hub
+
+  release:
+    needs: check
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    permissions:
+      # The version target pushes its release commit and tag to main.
+      contents: write
+      actions: read
+    steps:
+      - name: Checkout Codebase
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install Dependencies
+        run: npm ci
+      - name: Setup Base and SHAs for 'nx affected'
+        uses: nrwl/nx-set-shas@v4
+      # build-image copies dist/ into the image, so the build must run in
+      # this job rather than in check.
+      - name: Run Build
+        run: npx nx affected -t build
+      - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-      - if: ${{ github.event_name != 'pull_request' }}
-        name: Setup SSH
+      - name: Setup SSH
         uses: MrSquaare/ssh-setup-action@v3
         with:
           host: github.com
           private-key: ${{ secrets.ACTIONS_PRIVATE_KEY }}
-      - if: ${{ github.event_name != 'pull_request' }}
-        name: Set up QEMU
+      - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
-      - if: ${{ github.event_name != 'pull_request' }}
-        name: Set up Docker Buildx
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
           # docker-container + QEMU replaces the kubernetes driver, which
           # only works from a runner inside the cluster.
           driver: 'docker-container'
           platforms: 'linux/amd64,linux/arm64'
-      - if: ${{ github.event_name != 'pull_request' }}
-        name: Run Version Upgrades
+      - name: Run Version Upgrades
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "github-actions[bot]"
           npx nx affected -t version --parallel=1
-          git fetch origin develop
-          git checkout develop
-          git pull origin main --rebase
-          git push --force-with-lease origin develop

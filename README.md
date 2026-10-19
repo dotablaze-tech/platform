@@ -110,6 +110,11 @@ This monorepo encourages reuse and clean separation of concerns by organizing li
 
 CI pipelines live in `.github/workflows/`, and use Nx to build affected projects only, improving feedback time.
 
+`ci.yml` has two jobs. `check` runs format, lint, test, e2e and build on every PR and push with read-only
+permissions. `release` runs only on pushes to `main` after `check` passes: it versions affected projects, pushes
+their images to Docker Hub and bumps the app version in `dotablaze-tech/deployments`. Only `release` receives
+the Docker Hub and deploy-key secrets.
+
 ## 📌 About
 
 This repo is the central platform for building, deploying, and scaling Dotablaze Tech applications — including bots,
