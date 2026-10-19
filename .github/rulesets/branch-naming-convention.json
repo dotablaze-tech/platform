@@ -1,0 +1,31 @@
+{
+  "name": "Branch Naming Convention",
+  "target": "branch",
+  "source_type": "Repository",
+  "source": "dotablaze-tech/platform",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "exclude": ["refs/heads/main", "refs/heads/gh-pages"],
+      "include": ["refs/heads/**"]
+    }
+  },
+  "rules": [
+    {
+      "type": "branch_name_pattern",
+      "parameters": {
+        "operator": "regex",
+        "pattern": "^(feat|fix|hotfix|release|chore|docs|refactor|test|ci|renovate|dependabot)/.+",
+        "negate": false,
+        "name": "Conventional prefixes"
+      }
+    }
+  ],
+  "bypass_actors": [
+    {
+      "actor_id": null,
+      "actor_type": "OrganizationAdmin",
+      "bypass_mode": "always"
+    }
+  ]
+}
