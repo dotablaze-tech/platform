@@ -43,3 +43,9 @@ Thumbs.db
 
 # Go build output
 apps/go/meowbot/meowbot
+
+.claude/worktrees
+.claude/settings.local.json
+.nx/polygraph
+.nx/self-healing
+.nx/migrate-runs
