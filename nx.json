@@ -31,5 +31,20 @@
       }
     },
     "@nx-go/nx-go"
-  ]
+  ],
+  "targetDefaults": {
+    "@jscutlery/semver:version": {
+      "options": {
+        "skipCommitTypes": [
+          "build",
+          "chore",
+          "ci",
+          "docs",
+          "refactor",
+          "style",
+          "test"
+        ]
+      }
+    }
+  }
 }
