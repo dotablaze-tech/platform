@@ -22,14 +22,17 @@ the [dotablaze-tech/deployments](https://github.com/dotablaze-tech/deployments) 
 This tool clones the remote deployments repo, updates the version for a specific app, commits the change with a standard
 message, and pushes it to the remote.
 
-> ✅ **Use this script to consistently version your apps for CI/CD deployment.**
+In CI it is not run by hand: the `update-app` Nx target of `meowbot` runs
+`bash tools/update-app.sh charts/meowbot/Chart.yaml {version} {projectName}` as a `postTarget` of `version`, after
+`build-image`, during the `release` job in `.github/workflows/ci.yml`.
 
 #### 📦 What it does:
 
 - Clones the deployments Git repository to a temporary folder
 - Validates the target file is tracked and clean
 - Updates the `appVersion:` field with the new version
-- Commits and pushes the change with a conventional commit message
+- Commits (`chore(<project_name>): update app version to version <version>`) and pushes to the default branch of
+  `git@github.com:dotablaze-tech/deployments.git` over SSH
 
 #### ✅ Usage
 
@@ -45,7 +48,7 @@ message, and pushes it to the remote.
 
 This command updates the version in `Chart.yaml` to `1.3.2` for the `meowbot` project and pushes the change to GitHub.
 
-> ⚠️ **Warning:** This script will attempt to push changes. Make sure your Git credentials and SSH keys are set up
+> ⚠️ **Warning:** This script pushes directly to the deployments repo. Make sure your Git credentials and SSH keys are set up
 > properly.
 
 ---
