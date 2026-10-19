@@ -27,5 +27,8 @@
   "allowScripts": {
     "nx": true,
     "@swc/core": true
+  },
+  "overrides": {
+    "undici": "^7.30.1"
   }
 }
