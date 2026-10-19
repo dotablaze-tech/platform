@@ -1,0 +1,16 @@
+name: Verify PR Signatures
+
+on:
+  pull_request:
+
+concurrency:
+  group: verify-pr-signatures-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions: {}
+
+jobs:
+  signatures:
+    permissions:
+      contents: read
+    uses: jdwlabs/.github/.github/workflows/verify-pr-signatures.yml@f20bc8b9f19c4260846052d7aed50a588907e91d # main as of 2026-10-19 (no tagged releases)
