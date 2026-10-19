@@ -55,14 +55,14 @@ jobs:
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     permissions:
-      # The version target pushes its release commit and tag to main.
-      contents: write
+      contents: read
       actions: read
     steps:
       - name: Checkout Codebase
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -82,6 +82,13 @@ jobs:
           # only works from a runner inside the cluster.
           driver: 'docker-container'
           platforms: 'linux/amd64,linux/arm64'
+      # Release commits and tags push over SSH as the org's machine user:
+      # main's ruleset lets org admins bypass it, and GitHub refuses the
+      # Actions integration as a bypass actor on org repository rulesets.
+      # Unlike GITHUB_TOKEN pushes, these trigger CI, whose run then finds
+      # only chore commits and releases nothing.
+      - name: Push over SSH
+        run: git remote set-url --push origin "git@github.com:${GITHUB_REPOSITORY}.git"
       # The version target pushes a release commit to main. If main moved
       # since this run's commit, the push is rejected but its tags still land,
       # orphaning them. Releasing from the latest main shrinks that window to
