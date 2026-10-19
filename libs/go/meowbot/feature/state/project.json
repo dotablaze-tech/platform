@@ -5,6 +5,14 @@
   "sourceRoot": "libs/go/meowbot/feature/state",
   "tags": ["type:library", "language:go", "scope:meowbot", "library:feature"],
   "targets": {
+    "version": {
+      "executor": "@jscutlery/semver:version",
+      "options": {
+        "trackDeps": true,
+        "push": true,
+        "preset": "conventionalcommits"
+      }
+    },
     "test": {
       "executor": "@nx-go/nx-go:test",
       "cache": true,
