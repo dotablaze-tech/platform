@@ -6,8 +6,8 @@ scripts: [tools/README.md](tools/README.md).
 
 ## Repo facts
 
-- Nx 20 + Go workspace (`go.work`). Projects: `meowbot` (Discord bot, the only
-  deployed app), `meowbotdb` (SQL), and `go-meowbot-*` libs. `npx nx show projects`
+- Nx + Go workspace (`go.work`). Projects: `meowbot` (Discord bot, the only
+  deployed app), `meowbotdb` (Postgres image, released but not deployed), and `go-meowbot-*` libs. `npx nx show projects`
   lists them.
 - npm only (`package-lock.json`); install with `npm ci`.
 
