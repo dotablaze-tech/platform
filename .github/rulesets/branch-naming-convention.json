@@ -2,7 +2,7 @@
   "name": "Branch Naming Convention",
   "target": "branch",
   "source_type": "Repository",
-  "source": "dotablaze-tech/platform",
+  "source": "dotablaze-tech/apps",
   "enforcement": "active",
   "conditions": {
     "ref_name": {

@@ -1,10 +1,10 @@
 # 🗣️ Meowbot Handler
 
-![Build](https://img.shields.io/github/actions/workflow/status/dotablaze-tech/platform/ci.yml?branch=main)
+![Build](https://img.shields.io/github/actions/workflow/status/dotablaze-tech/apps/ci.yml?branch=main)
 ![Nx](https://img.shields.io/badge/Nx-managed-blue)
 ![Go Module](https://img.shields.io/badge/Go-Module-brightgreen)
 
-**Meowbot Handler** is a Go package that powers the Discord event and command handling layer of [🐾 Meow Bot](https://github.com/dotablaze-tech/platform/tree/main/apps/go/meowbot). It defines logic for responding to message events, slash commands, and interaction components using the `discordgo` library.
+**Meowbot Handler** is a Go package that powers the Discord event and command handling layer of [🐾 Meow Bot](https://github.com/dotablaze-tech/apps/tree/main/apps/go/meowbot). It defines logic for responding to message events, slash commands, and interaction components using the `discordgo` library.
 
 This package is organized under the monorepo’s feature set and managed using [Nx](https://nx.dev).
 
@@ -35,7 +35,7 @@ libs/go/meowbot/feature/handler/
 Used internally by Meowbot’s core app. Import like this:
 
 ```go
-import "github.com/dotablaze-tech/platform/libs/go/meowbot/feature/handler"
+import "github.com/dotablaze-tech/apps/libs/go/meowbot/feature/handler"
 ```
 
 ---

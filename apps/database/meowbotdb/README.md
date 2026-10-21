@@ -1,6 +1,6 @@
 # MeowbotDB
 
-![Build](https://img.shields.io/github/actions/workflow/status/dotablaze-tech/platform/ci.yml?branch=main)
+![Build](https://img.shields.io/github/actions/workflow/status/dotablaze-tech/apps/ci.yml?branch=main)
 ![Docker Image Version](https://img.shields.io/docker/v/dotablaze/meowbotdb)
 ![Docker Image Size](https://img.shields.io/docker/image-size/dotablaze/meowbotdb)
 ![Docker Downloads](https://img.shields.io/docker/pulls/dotablaze/meowbotdb?label=downloads)

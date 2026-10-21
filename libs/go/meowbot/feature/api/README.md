@@ -1,6 +1,6 @@
 # 🌐 Meowbot API
 
-![Build](https://img.shields.io/github/actions/workflow/status/dotablaze-tech/platform/ci.yml?branch=main)
+![Build](https://img.shields.io/github/actions/workflow/status/dotablaze-tech/apps/ci.yml?branch=main)
 ![Nx](https://img.shields.io/badge/Nx-managed-blue)
 ![Go Module](https://img.shields.io/badge/Go-Module-brightgreen)
 
@@ -35,7 +35,7 @@ libs/go/meowbot/feature/api/
 This package is intended to be used internally by the Meowbot platform:
 
 ```go
-import "github.com/dotablaze-tech/platform/libs/go/meowbot/feature/api"
+import "github.com/dotablaze-tech/apps/libs/go/meowbot/feature/api"
 ```
 
 ---

@@ -1,10 +1,10 @@
 # 🐘 Meowbot DB
 
-![Build](https://img.shields.io/github/actions/workflow/status/dotablaze-tech/platform/ci.yml?branch=main)
+![Build](https://img.shields.io/github/actions/workflow/status/dotablaze-tech/apps/ci.yml?branch=main)
 ![Nx](https://img.shields.io/badge/Nx-managed-blue)
 ![Go Module](https://img.shields.io/badge/Go-Module-brightgreen)
 
-**Meowbot DB** is the database persistence layer for [🐾 Meow Bot](https://github.com/dotablaze-tech/platform/tree/main/apps/go/meowbot). It provides typed access to PostgreSQL-backed guild and user statistics, including streaks, high scores, and usage tracking. This package wraps raw SQL interactions with clean Go functions and models.
+**Meowbot DB** is the database persistence layer for [🐾 Meow Bot](https://github.com/dotablaze-tech/apps/tree/main/apps/go/meowbot). It provides typed access to PostgreSQL-backed guild and user statistics, including streaks, high scores, and usage tracking. This package wraps raw SQL interactions with clean Go functions and models.
 
 Part of the `meowbot` suite, it is managed via [Nx](https://nx.dev) in the `libs/go` workspace.
 
@@ -37,7 +37,7 @@ libs/go/meowbot/feature/db/
 This package is used internally by Meowbot. Import like so:
 
 ```go
-import "github.com/dotablaze-tech/platform/libs/go/meowbot/feature/db"
+import "github.com/dotablaze-tech/apps/libs/go/meowbot/feature/db"
 ```
 
 ---
