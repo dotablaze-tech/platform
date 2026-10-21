@@ -1,11 +1,11 @@
-# Dotablaze Platform Monorepo
+# Dotablaze Apps Monorepo
 
-[![CI](https://github.com/dotablaze-tech/platform/actions/workflows/ci.yml/badge.svg)](https://github.com/dotablaze-tech/platform/actions/workflows/ci.yml)
+[![CI](https://github.com/dotablaze-tech/apps/actions/workflows/ci.yml/badge.svg)](https://github.com/dotablaze-tech/apps/actions/workflows/ci.yml)
 ![Go](https://img.shields.io/badge/Go-1.26-blue)
 ![Nx](https://img.shields.io/badge/Nx-monorepo-blue)
 ![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)
 
-The Dotablaze Tech Platform Monorepo is a multi-language, multi-project repository that houses all application code,
+The Dotablaze Tech apps monorepo is a multi-language, multi-project repository that houses all application code,
 reusable libraries, configuration, and tooling used across the Dotablaze ecosystem. This repository is organized to
 support scalable development with a clean separation of concerns and structured sharing of features, utilities, and
 infrastructure.
@@ -114,8 +114,9 @@ change that weakens protection unless given `--allow-weakening`).
 
 ## 📌 About
 
-This repo is the central platform for building, deploying, and scaling Dotablaze Tech applications — including bots,
-services, and eventually frontend dashboards. Managed with Nx and Go Workspaces for flexibility and performance.
+This repo holds the source for Dotablaze Tech applications: bots, services, and eventually frontend dashboards. It
+builds and releases images; deploying them is the job of
+[dotablaze-tech/deployments](https://github.com/dotablaze-tech/deployments). Managed with Nx and Go workspaces.
 
 ### 👤 Maintainer
 

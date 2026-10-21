@@ -1,11 +1,11 @@
 # 🧰 Meowbot Util
 
-![Build](https://img.shields.io/github/actions/workflow/status/dotablaze-tech/platform/ci.yml?branch=main)
+![Build](https://img.shields.io/github/actions/workflow/status/dotablaze-tech/apps/ci.yml?branch=main)
 ![Nx](https://img.shields.io/badge/Nx-managed-blue)
 ![Go Module](https://img.shields.io/badge/Go-Module-brightgreen)
 
 **Meowbot Util** is a utility library for
-the [🐾 Meow Bot](https://github.com/dotablaze-tech/platform/tree/main/apps/go/meowbot), providing reusable helpers,
+the [🐾 Meow Bot](https://github.com/dotablaze-tech/apps/tree/main/apps/go/meowbot), providing reusable helpers,
 configuration loading, and emoji constants. It promotes clean separation of concerns and shared logic across Meowbot
 features.
 
@@ -40,7 +40,7 @@ libs/go/meowbot/util/
 This module is used internally in the monorepo. To use it in another Go module:
 
 ```go
-import "github.com/dotablaze-tech/platform/libs/go/meowbot/util"
+import "github.com/dotablaze-tech/apps/libs/go/meowbot/util"
 ```
 
 Make sure your `go.work` and `go.mod` are properly wired if using outside of Nx context.
@@ -72,7 +72,7 @@ import (
     "fmt"
     "os"
 
-    "github.com/dotablaze-tech/platform/libs/go/meowbot/util"
+    "github.com/dotablaze-tech/apps/libs/go/meowbot/util"
 )
 
 func main() {

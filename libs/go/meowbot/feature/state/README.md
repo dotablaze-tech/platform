@@ -1,10 +1,10 @@
 # 🧠 Meowbot State
 
-![Build](https://img.shields.io/github/actions/workflow/status/dotablaze-tech/platform/ci.yml?branch=main)
+![Build](https://img.shields.io/github/actions/workflow/status/dotablaze-tech/apps/ci.yml?branch=main)
 ![Nx](https://img.shields.io/badge/Nx-managed-blue)
 ![Go Module](https://img.shields.io/badge/Go-Module-brightgreen)
 
-**Meowbot State** is a modular Go library for managing in-memory state tracking within the [🐾 Meow Bot](https://github.com/dotablaze-tech/platform/tree/main/apps/go/meowbot). It maintains per-guild data such as streak counts, user participation, and high score tracking to enable responsive, context-aware bot behavior.
+**Meowbot State** is a modular Go library for managing in-memory state tracking within the [🐾 Meow Bot](https://github.com/dotablaze-tech/apps/tree/main/apps/go/meowbot). It maintains per-guild data such as streak counts, user participation, and high score tracking to enable responsive, context-aware bot behavior.
 
 This package is part of the monorepo’s feature set and is managed by [Nx](https://nx.dev).
 
@@ -34,7 +34,7 @@ libs/go/meowbot/feature/state/
 Used internally within Meowbot features. To import:
 
 ```go
-import "github.com/dotablaze-tech/platform/libs/go/meowbot/feature/state"
+import "github.com/dotablaze-tech/apps/libs/go/meowbot/feature/state"
 ```
 
 ---

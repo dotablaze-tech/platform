@@ -2,7 +2,7 @@
   "name": "Release Tag Protection",
   "target": "tag",
   "source_type": "Repository",
-  "source": "dotablaze-tech/platform",
+  "source": "dotablaze-tech/apps",
   "enforcement": "active",
   "conditions": {
     "ref_name": {
