@@ -9,4 +9,9 @@ COPY ./dist/apps/go/meowbot .
 # image non-root if the base tag ever changes.
 USER nonroot:nonroot
 
+# Probes the API /liveness endpoint; start-period covers the DB and Discord
+# connect at boot.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD ["/app/main", "healthcheck"]
+
 ENTRYPOINT ["/app/main"]

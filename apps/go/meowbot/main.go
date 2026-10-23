@@ -2,14 +2,17 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"libs/go/meowbot/feature/api"
 	"libs/go/meowbot/feature/db"
 	"libs/go/meowbot/feature/handler"
 	"libs/go/meowbot/util"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 )
 
 func Run(ctx context.Context, cfg util.AppConfig) error {
@@ -77,6 +80,13 @@ func Run(ctx context.Context, cfg util.AppConfig) error {
 }
 
 func main() {
+	if len(os.Args) > 1 && os.Args[1] == healthcheckArg {
+		if err := runHealthcheck(context.Background(), util.Cfg.ApiPort); err != nil {
+			os.Exit(1)
+		}
+		return
+	}
+
 	// Ensure bot token is available before proceeding
 	if util.Cfg.BotToken == "" {
 		util.Cfg.Logger.Error("❌ DISCORD_BOT_TOKEN not set. Exiting.")
@@ -88,4 +98,27 @@ func main() {
 		util.Cfg.Logger.Error("❌ Error while running bot", "error", err)
 		os.Exit(1)
 	}
+}
+
+// The distroless runtime image has no shell, curl or wget, so the container
+// HEALTHCHECK re-invokes the binary itself.
+const healthcheckArg = "healthcheck"
+
+func runHealthcheck(ctx context.Context, port string) error {
+	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
+	defer cancel()
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "http://127.0.0.1:"+port+"/liveness", nil)
+	if err != nil {
+		return err
+	}
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("liveness returned %d", resp.StatusCode)
+	}
+	return nil
 }
