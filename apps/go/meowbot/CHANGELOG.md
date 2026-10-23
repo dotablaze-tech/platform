@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.0.8](https://github.com/dotablaze-tech/apps/compare/meowbot-1.0.7...meowbot-1.0.8) (2026-10-23)
+
+### Bug Fixes
+
+* **meowbot:** add container healthcheck ([3d28e4f](https://github.com/dotablaze-tech/apps/commit/3d28e4f134ced7532898897f605855ac6865f181))
+
 ## [1.0.7](https://github.com/dotablaze-tech/platform/compare/meowbot-1.0.6...meowbot-1.0.7) (2026-10-19)
 
 ### Bug Fixes
