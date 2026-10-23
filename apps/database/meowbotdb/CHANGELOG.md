@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.0.2](https://github.com/dotablaze-tech/apps/compare/meowbotdb-1.0.1...meowbotdb-1.0.2) (2026-10-23)
+
+### Bug Fixes
+
+* **meowbotdb:** run as postgres, add healthcheck, drop baked password ([3ff741f](https://github.com/dotablaze-tech/apps/commit/3ff741f890259e21212a1a8f506e82a4c3cf7b45))
+
 ## [1.0.1](https://github.com/dotablaze-tech/platform/compare/meowbotdb-1.0.0...meowbotdb-1.0.1) (2026-10-19)
 
 
