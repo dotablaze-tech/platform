@@ -25,4 +25,7 @@ COPY --from=builder /app/dist/apps/go/meowbot .
 
 USER nonroot:nonroot
 
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD ["/app/main", "healthcheck"]
+
 ENTRYPOINT ["/app/main"]
