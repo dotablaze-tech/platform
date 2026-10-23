@@ -82,7 +82,9 @@ Builds a local image using host architecture for development/testing.
 
 ## 🗃️ Database Credentials
 
-Default credentials after container start:
+The image sets no password; the `serve` targets pass the local-only
+`default_password` as `POSTGRES_PASSWORD`. When running the image yourself, pass
+`-e POSTGRES_PASSWORD=...`. Credentials with the `serve` targets:
 
 ```text
 Host:     localhost
