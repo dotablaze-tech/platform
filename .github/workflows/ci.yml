@@ -35,7 +35,7 @@ jobs:
       - name: Install Dependencies
         run: npm ci
       - name: Setup Base and SHAs for 'nx affected'
-        uses: nrwl/nx-set-shas@v4
+        uses: nrwl/nx-set-shas@v5
       - if: ${{ github.event_name == 'pull_request' }}
         name: Setup Main Branch Tracking
         run: git branch --track main origin/main
@@ -99,7 +99,7 @@ jobs:
       - name: Install Dependencies
         run: npm ci
       - name: Setup Base and SHAs for 'nx affected'
-        uses: nrwl/nx-set-shas@v4
+        uses: nrwl/nx-set-shas@v5
       # build-image copies dist/ into the image, so the build must run in
       # this job rather than in check.
       - name: Run Build
