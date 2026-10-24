@@ -2,6 +2,12 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [1.0.3](https://github.com/dotablaze-tech/apps/compare/meowbotdb-1.0.2...meowbotdb-1.0.3) (2026-10-24)
+
+### Bug Fixes
+
+* **deps:** update meowbot runtime dependencies ([2c6a7b2](https://github.com/dotablaze-tech/apps/commit/2c6a7b21dd24fec8c5edc636424454bf1028a6ad))
+
 ## [1.0.2](https://github.com/dotablaze-tech/apps/compare/meowbotdb-1.0.1...meowbotdb-1.0.2) (2026-10-23)
 
 ### Bug Fixes
